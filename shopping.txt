@@ -1,0 +1,154 @@
+template <typename E> 
+void bubbleSort(List<E> &L)
+{
+    int n = L.length();
+    bool swap;
+    for (int i = 0; i < n - 1; i++)
+    {
+        L.moveToStart();
+        swap = 0;
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            E curr = L.getValue();
+            L.next();
+            E mnext = L.getValue();
+            
+            if (curr > mnext) 
+            {
+                L.prev(); 
+                E removed = L.remove(); 
+                L.insert(mnext);   
+                L.next();
+                L.remove(); 
+                L.insert(removed); 
+                swap = 1;
+            }
+        }
+        if (!swap) break;
+    }
+}
+
+
+template <typename E> 
+void selectionSort(List<E> &L)
+{
+    int n = L.length();
+    for (int i = 0; i < n; i++)
+    {
+        int mini = i;
+        L.moveToPos(i);
+        E min = L.getValue();
+        
+        for (int j = i + 1; j < n; j++)
+        {
+            L.moveToPos(j);
+            E curr = L.getValue();
+            
+            if (curr < min) 
+            {
+                mini = j;
+                min = curr;
+            }
+        }
+        
+        if (mini != i)
+        {
+            L.moveToPos(mini);
+            E tmp1 = L.remove();
+            
+            L.moveToPos(i);
+            L.insert(tmp1);
+        }
+    }
+}
+
+template<typename E>
+void insertionSort(List<E>&L)
+{
+    int n = L.length();
+    for (int i = 1; i < n; i++)
+    {
+        L.moveToPos(i);
+        E key = L.getValue();
+        int j = i - 1;
+        for (j = i - 1 ; j >= 0; j--)
+        {
+            L.moveToPos(j);
+            E value = L.getValue();
+            if (value < key) 
+                break;
+            L.moveToPos(j + 1);
+            L.remove();
+            L.insert(value);
+        }
+        
+        L.moveToPos(j + 1);
+        L.remove();
+        L.insert(key);
+    }
+}
+
+template <typename T>
+void mergesort(T arr[], int left, int right) 
+{
+    if (left < right) 
+    {
+        int mid = left + (right - left) / 2;
+
+        mergesort(arr, left, mid);
+
+        mergesort(arr, mid + 1, right);
+
+        merge(arr, left, mid, right);
+    }
+}
+
+template <typename E>
+int partition(List<E> &L, int low, int high, const E& pivot) 
+{
+    int left = low;
+    int right = high;
+
+    do {
+        do 
+        {
+            left++;
+            L.moveToPos(left);
+        } 
+        while (L.getValue() < pivot);
+
+        do 
+        {
+            right--;
+            L.moveToPos(right);
+        } 
+        while (L.getValue() >= pivot && left < right);
+
+        if (left < right)
+            swap(L,left,right);
+    } 
+    while (left < right);
+
+    return left;
+}
+
+template <typename E>
+void helper(List<E> &L, int low, int high) 
+{
+    if (low < high) 
+    {
+        swap(L, (low + high) / 2, high);
+        L.moveToPos(high);
+        E pivot = L.getValue();
+        int pivotIndex = partition(L, low - 1, high, pivot);
+        swap(L, pivotIndex, high);
+        helper(L, low, pivotIndex - 1);
+        helper(L, pivotIndex + 1, high);
+    }
+}
+
+template <typename E>
+void quickSort(List<E> &L) 
+{
+    helper(L, 0, L.length() - 1);
+}
